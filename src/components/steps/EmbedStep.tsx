@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { BROWSER_MODEL_LABEL } from "../../services/embedding/browserEmbedding";
 import { useRagPipeline } from "../../context/RagPipelineContext";
 import { EmbedVectorCard } from "../embed/EmbedVectorCard";
@@ -8,10 +9,10 @@ import { Panel } from "../ui/Panel";
 import { StatusBadge } from "../ui/StatusBadge";
 
 export function EmbedStep() {
-  const { state, runEmbed, setActiveStep } = useRagPipeline();
+  const { state, runEmbed, setActiveStep, activeStep } = useRagPipeline();
   const status = state.stepStatuses.embed;
   const isEmbedding = status === "running";
-  const canRun = state.chunks.length > 0 && (status === "ready" || status === "done");
+  const autoStartedRef = useRef(false);
 
   const chunkById = new Map(state.chunks.map((c) => [c.id, c]));
   const chunkProgress = state.embedChunkProgress;
@@ -19,16 +20,39 @@ export function EmbedStep() {
     ? (chunkProgress.current / chunkProgress.total) * 100
     : undefined;
 
+  useEffect(() => {
+    if (activeStep !== "embed") {
+      autoStartedRef.current = false;
+      return;
+    }
+    if (autoStartedRef.current || isEmbedding) return;
+    if (state.chunks.length === 0) return;
+    if (state.embeddings.length > 0) return;
+    if (status !== "ready") return;
+
+    autoStartedRef.current = true;
+    void runEmbed();
+  }, [
+    activeStep,
+    isEmbedding,
+    runEmbed,
+    state.chunks.length,
+    state.embeddings.length,
+    status,
+  ]);
+
+  const showWorking = isEmbedding || (status === "ready" && state.embeddings.length === 0 && state.chunks.length > 0);
+
   return (
     <Panel
       title="Embed"
-      description={`Vectorize each chunk with ${BROWSER_MODEL_LABEL} (loaded when you opened the app).`}
+      description={`Vectorize each chunk with ${BROWSER_MODEL_LABEL}. Vector size is fixed at 384 numbers per chunk for this model—you cannot change dimension without switching models in config.`}
       footer={
         state.embeddings.length > 0 && !isEmbedding ? (
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="text-xs text-slate-500">
-              Retrieval uses the same embedding model as these vectors.
-            </p>
+            <Button variant="ghost" className="text-xs" onClick={() => void runEmbed()}>
+              Re-run embeddings
+            </Button>
             <Button variant="secondary" onClick={() => setActiveStep("retrieve")}>
               Continue to Retrieve →
             </Button>
@@ -36,23 +60,20 @@ export function EmbedStep() {
         ) : undefined
       }
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <StatusBadge status={status} />
-          <span className="text-sm text-slate-600">
-            {state.embeddings.length > 0 && !isEmbedding
-              ? `${state.embeddings.length} vectors ready`
-              : "No embeddings yet"}
+      <div className="flex flex-wrap items-center gap-2">
+        <StatusBadge status={status} />
+        <span className="text-sm text-slate-600">
+          {state.embeddings.length > 0 && !isEmbedding
+            ? `${state.embeddings.length} vectors ready`
+            : showWorking
+              ? "Embedding in progress…"
+              : "Waiting for chunks"}
+        </span>
+        {state.embeddingsPersisted && !isEmbedding && (
+          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">
+            Saved to IndexedDB
           </span>
-          {state.embeddingsPersisted && !isEmbedding && (
-            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">
-              Saved to IndexedDB
-            </span>
-          )}
-        </div>
-        <Button onClick={() => runEmbed()} disabled={!canRun || isEmbedding}>
-          {status === "done" ? "Re-run embedding" : "Generate embeddings"}
-        </Button>
+        )}
       </div>
 
       {state.embedError && (
@@ -67,7 +88,7 @@ export function EmbedStep() {
         </p>
       )}
 
-      {isEmbedding && (
+      {showWorking && (
         <GeneratingIndicator
           label="Generating embeddings…"
           detail={

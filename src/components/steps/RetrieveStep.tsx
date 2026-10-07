@@ -8,7 +8,7 @@ import { Panel } from "../ui/Panel";
 import { StatusBadge } from "../ui/StatusBadge";
 
 export function RetrieveStep() {
-  const { state, runRetrieve, setRetrievalSettings } = useRagPipeline();
+  const { state, runRetrieve, setRetrievalSettings, setActiveStep } = useRagPipeline();
   const [query, setQuery] = useState("What is retrieval-augmented generation?");
   const status = state.stepStatuses.retrieve;
   const isSearching = status === "running";
@@ -23,6 +23,15 @@ export function RetrieveStep() {
     <Panel
       title="Retrieve"
       description="Embed your question, compare it to chunk vectors with cosine similarity, and rank the best matches. Vectors are read from memory or IndexedDB."
+      footer={
+        state.retrievalHits.length > 0 && !isSearching ? (
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <Button variant="secondary" onClick={() => setActiveStep("answer")}>
+              Continue to Answer →
+            </Button>
+          </div>
+        ) : undefined
+      }
     >
       <div className="flex flex-wrap items-center gap-2">
         <StatusBadge status={status} />
@@ -91,12 +100,12 @@ export function RetrieveStep() {
       )}
 
       {!isSearching && (
-      <RetrievalResults
-        documentName={state.document?.name ?? "Document"}
-        hits={state.retrievalHits}
-        meta={state.retrievalMeta}
-        queryVector={state.lastQueryVector}
-      />
+        <RetrievalResults
+          documentName={state.document?.name ?? "Document"}
+          hits={state.retrievalHits}
+          meta={state.retrievalMeta}
+          queryVector={state.lastQueryVector}
+        />
       )}
     </Panel>
   );

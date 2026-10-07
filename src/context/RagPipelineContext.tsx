@@ -307,7 +307,6 @@ export function RagPipelineProvider({ children }: { children: ReactNode }) {
           answer: "idle",
         },
       }));
-      setActiveStep("retrieve");
     } catch (err) {
       setState((s) => ({
         ...s,
@@ -371,7 +370,6 @@ export function RagPipelineProvider({ children }: { children: ReactNode }) {
           answer: hits.length > 0 ? "ready" : "idle",
         },
       }));
-      if (hits.length > 0) setActiveStep("answer");
     },
     [state.chunks, state.embeddings, state.embeddingBackend, state.document, state.retrievalSettings]
   );
