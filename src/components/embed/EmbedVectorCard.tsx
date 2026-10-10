@@ -1,6 +1,6 @@
 import type { TextChunk } from "../../types/rag";
 import type { ChunkEmbedding } from "../../types/rag";
-import { computeVectorStats, normalizedPreview } from "../../utils/vectorStats";
+import { computeVectorStats } from "../../utils/vectorStats";
 
 type Props = {
   chunk: TextChunk;
@@ -10,7 +10,6 @@ type Props = {
 
 export function EmbedVectorCard({ chunk, embedding, defaultOpen }: Props) {
   const stats = computeVectorStats(embedding.vector);
-  const bars = normalizedPreview(embedding.vector, 12);
   const previewValues = embedding.vector.slice(0, 6);
 
   return (
@@ -64,22 +63,6 @@ export function EmbedVectorCard({ chunk, embedding, defaultOpen }: Props) {
             </dd>
           </div>
         </dl>
-
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-            First 12 dimensions (bar height = size)
-          </p>
-          <div className="mt-2 flex h-16 items-end gap-1">
-            {bars.map((h, i) => (
-              <div
-                key={i}
-                className="flex-1 rounded-t bg-sky-500/80"
-                style={{ height: `${Math.max(8, h * 100)}%` }}
-                title={`dim ${i}: ${embedding.vector[i]?.toFixed(4)}`}
-              />
-            ))}
-          </div>
-        </div>
 
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-slate-500">

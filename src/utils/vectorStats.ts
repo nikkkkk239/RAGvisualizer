@@ -28,10 +28,3 @@ export function computeVectorStats(vector: number[]): VectorStats {
     mean: sum / vector.length,
   };
 }
-
-/** Values scaled to 0–1 for tiny bar charts (uses max abs). */
-export function normalizedPreview(vector: number[], count = 12): number[] {
-  const slice = vector.slice(0, count);
-  const maxAbs = Math.max(...slice.map((v) => Math.abs(v)), 1e-6);
-  return slice.map((v) => Math.abs(v) / maxAbs);
-}

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { BROWSER_MODEL_LABEL } from "../../services/embedding/browserEmbedding";
 import { useRagPipeline } from "../../context/RagPipelineContext";
-import { EmbedVectorCard } from "../embed/EmbedVectorCard";
+import { EmbedVectorList } from "../embed/EmbedVectorList";
+import { ChunkVectorSpace } from "../viz/VectorSpace3D";
 import { EmbeddingBackendBadge } from "../embed/EmbeddingBackendBadge";
 import { GeneratingIndicator } from "../ui/GeneratingIndicator";
 import { Button } from "../ui/Button";
@@ -105,21 +106,11 @@ export function EmbedStep() {
           <div className="mt-4">
             <EmbeddingBackendBadge />
           </div>
-          <div className="mt-6 space-y-3">
-            <h3 className="text-sm font-semibold text-slate-900">Per-chunk vectors</h3>
-            {state.embeddings.map((e, i) => {
-              const chunk = chunkById.get(e.chunkId);
-              if (!chunk) return null;
-              return (
-                <EmbedVectorCard
-                  key={e.chunkId}
-                  chunk={chunk}
-                  embedding={e}
-                  defaultOpen={i === 0}
-                />
-              );
-            })}
-          </div>
+          <ChunkVectorSpace embeddings={state.embeddings} chunks={state.chunks} />
+          <EmbedVectorList
+            embeddings={state.embeddings}
+            chunkById={chunkById}
+          />
         </>
       )}
     </Panel>

@@ -1,13 +1,11 @@
-import { warmUpAnswerModel } from "../answer/browserAnswer";
 import { canAttemptBrowserModel, warmUpEmbeddingModel } from "../embedding/browserEmbedding";
 
-export type ModelPreloadItem = "embedding" | "answer";
+export type ModelPreloadItem = "embedding";
 
 export interface ModelPreloadProgress {
   message: string;
   percent?: number;
   embeddingReady: boolean;
-  answerReady: boolean;
 }
 
 export async function preloadAllModels(
@@ -20,47 +18,26 @@ export async function preloadAllModels(
   }
 
   let embeddingReady = false;
-  let answerReady = false;
   let embedPercent: number | undefined;
-  let answerPercent: number | undefined;
 
   const report = (message: string) => {
-    const parts = [embedPercent, answerPercent].filter((p) => p !== undefined) as number[];
-    const percent =
-      parts.length > 0
-        ? Math.round(parts.reduce((a, b) => a + b, 0) / parts.length)
-        : undefined;
     onProgress?.({
       message,
-      percent,
+      percent: embedPercent,
       embeddingReady,
-      answerReady,
     });
   };
 
-  report("Loading embedding and answer models…");
+  report("Loading the embedding model…");
 
-  const embedTask = warmUpEmbeddingModel((p) => {
+  await warmUpEmbeddingModel((p) => {
     if (p.percent !== undefined) embedPercent = p.percent;
     report(p.message);
-  }).then(() => {
-    embeddingReady = true;
-    report("Embedding model ready.");
   });
-
-  const answerTask = warmUpAnswerModel((p) => {
-    if (p.percent !== undefined) answerPercent = p.percent;
-    report(p.message);
-  }).then(() => {
-    answerReady = true;
-    report("Answer model ready.");
-  });
-
-  await Promise.all([embedTask, answerTask]);
+  embeddingReady = true;
   onProgress?.({
-    message: "All models ready.",
+    message: "Embedding model ready.",
     percent: 100,
     embeddingReady: true,
-    answerReady: true,
   });
 }

@@ -11,7 +11,6 @@ import {
   preloadAllModels,
   type ModelPreloadProgress,
 } from "../services/models/preloadModels";
-import { resetAnswerModel } from "../services/answer/browserAnswer";
 import { resetEmbeddingModel } from "../services/embedding/browserEmbedding";
 
 type PreloadStatus = "loading" | "ready" | "error";
@@ -37,7 +36,6 @@ export function ModelPreloadProvider({ children }: { children: ReactNode }) {
     setProgress({
       message: "Starting…",
       embeddingReady: false,
-      answerReady: false,
     });
     try {
       await preloadAllModels(setProgress);
@@ -54,7 +52,6 @@ export function ModelPreloadProvider({ children }: { children: ReactNode }) {
 
   const retry = useCallback(() => {
     resetEmbeddingModel();
-    resetAnswerModel();
     setAttempt((n) => n + 1);
   }, []);
 

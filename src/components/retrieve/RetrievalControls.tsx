@@ -39,7 +39,7 @@ export function RetrievalControls({ settings, onChange, disabled }: Props) {
         />
         <p className="text-xs text-slate-600">
           <strong>Top K</strong> is how many of the best-matching chunks you keep after
-          ranking. Higher K gives the answer step more context but can add noise.
+          ranking. A higher K shows more matches and can include weaker ones.
           Default: {DEFAULT_RETRIEVAL_SETTINGS.topK}.
         </p>
       </div>

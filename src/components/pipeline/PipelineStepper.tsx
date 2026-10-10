@@ -6,7 +6,6 @@ const STEPS: { id: PipelineStepId; label: string; short: string }[] = [
   { id: "chunk", label: "Chunk", short: "2" },
   { id: "embed", label: "Embed", short: "3" },
   { id: "retrieve", label: "Retrieve", short: "4" },
-  { id: "answer", label: "Answer", short: "5" },
 ];
 
 type Props = {

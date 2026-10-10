@@ -13,7 +13,7 @@ export function ModelBootstrapScreen() {
         <p className="mt-2 text-sm text-slate-600">
           {status === "error"
             ? "Local models could not be loaded."
-            : "Loading on-device models for embeddings and answers. This runs once per browser tab; later visits use the cache."}
+            : "Loading the on-device embedding model. This runs once per browser tab; later visits use the cache."}
         </p>
 
         {status === "loading" && progress && (
@@ -26,14 +26,6 @@ export function ModelBootstrapScreen() {
                 }
               >
                 Embedding {progress.embeddingReady ? "✓" : "…"}
-              </span>
-              <span>·</span>
-              <span
-                className={
-                  progress.answerReady ? "text-emerald-600 font-medium" : ""
-                }
-              >
-                Answer {progress.answerReady ? "✓" : "…"}
               </span>
             </div>
             {progress.percent !== undefined && (

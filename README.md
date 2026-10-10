@@ -1,6 +1,6 @@
 # RAG Visualizer
 
-A **local-first** learning app for Retrieval-Augmented Generation (RAG). Walk through **Upload → Chunk → Embed → Retrieve → Answer** entirely in the browser.
+A **local-first** learning app for Retrieval-Augmented Generation (RAG). Walk through **Upload → Chunk → Embed → Retrieve** entirely in the browser.
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ npm run dev
 
 Open the URL Vite prints (usually [http://localhost:5173](http://localhost:5173)).
 
-On first visit, the app **preloads** the embedding model (`Xenova/all-MiniLM-L6-v2`) and answer model (`Xenova/LaMini-Flan-T5-248M`) before the pipeline UI appears. Model IDs live in `src/config/models.ts`. Downloads are cached by the browser for later visits.
+On first visit, the app **preloads** the embedding model (`Xenova/all-MiniLM-L6-v2`). Model IDs live in `src/config/models.ts`. Downloads are cached by the browser for later visits.
 
 ### Other scripts
 
@@ -33,8 +33,7 @@ On first visit, the app **preloads** the embedding model (`Xenova/all-MiniLM-L6-
 1. **Upload** — Add up to **5** files (`.txt`, `.md`, or text-based `.pdf`). Each file ≤ **2 MB**, combined ≤ **5 MB**. Parsing runs in the browser via [PDF.js](https://mozilla.github.io/pdf.js/).
 2. **Chunk** — Tune **chunk size**, **overlap**, and **split method** (fixed / paragraph / sentence). The boundary map and highlighted preview update live.
 3. **Embed** — Vectorize chunks with the preloaded embedding model; vectors are saved to **IndexedDB**.
-4. **Retrieve** — Embed your query, score chunks with **cosine similarity**, apply **top K** and a **similarity threshold**.
-5. **Answer** — Generate a response with the preloaded **LaMini FLAN-T5** model using retrieved context (prompt preview + linked sources). Answer quality still depends on retrieval (top K, threshold) and chunk quality; larger browser LLMs are possible but slower to download.
+4. **Retrieve** — Type a query, embed it, and rank chunks with **cosine similarity**, **top K**, and a **similarity threshold**. Edit the query and search again to see how the similar chunks change.
 
 Use the stepper at the top to jump between stages. **Reset pipeline** clears document state (models stay loaded in the tab).
 
@@ -55,7 +54,6 @@ src/
     chunking/        # Chunk strategies
     embedding/       # Browser embeddings
     retrieval/       # Cosine search
-    answer/          # Local LLM + prompt builder
     models/          # Transformers.js env + preload
   storage/           # IndexedDB for vectors
   types/
@@ -64,7 +62,7 @@ src/
 ## Tech stack
 
 - React 19 + TypeScript + Vite + Tailwind CSS
-- [@huggingface/transformers](https://huggingface.co/docs/transformers.js) for embeddings and answers
+- [@huggingface/transformers](https://huggingface.co/docs/transformers.js) for embeddings
 - PDF.js for PDF text extraction
 
 ## License

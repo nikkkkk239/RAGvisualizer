@@ -2,7 +2,6 @@ import type {
   ChunkEmbedding,
   ChunkSettings,
   ChunkSplitMethod,
-  RagAnswer,
   RetrievalHit,
   TextChunk,
   UploadedDocument,
@@ -46,7 +45,3 @@ export interface RetrievalService {
   ): Promise<RetrievalHit[]>;
 }
 
-export interface AnswerService {
-  readonly modelId: string;
-  generate(query: string, hits: RetrievalHit[]): Promise<RagAnswer>;
-}

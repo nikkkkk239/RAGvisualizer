@@ -30,7 +30,7 @@ export function GeneratingIndicator({ label, detail, percent }: Props) {
       )}
       <p className="mt-3 text-xs text-sky-800/70">
         Local models run in this tab — the UI may pause briefly while each chunk is
-        processed. This is normal, not a freeze.
+        processed.
       </p>
     </div>
   );

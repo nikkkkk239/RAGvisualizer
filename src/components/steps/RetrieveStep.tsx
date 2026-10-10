@@ -8,8 +8,8 @@ import { Panel } from "../ui/Panel";
 import { StatusBadge } from "../ui/StatusBadge";
 
 export function RetrieveStep() {
-  const { state, runRetrieve, setRetrievalSettings, setActiveStep } = useRagPipeline();
-  const [query, setQuery] = useState("What is retrieval-augmented generation?");
+  const { state, runRetrieve, setRetrievalSettings } = useRagPipeline();
+  const [query, setQuery] = useState("");
   const status = state.stepStatuses.retrieve;
   const isSearching = status === "running";
   const hasVectors =
@@ -22,16 +22,7 @@ export function RetrieveStep() {
   return (
     <Panel
       title="Retrieve"
-      description="Embed your question, compare it to chunk vectors with cosine similarity, and rank the best matches. Vectors are read from memory or IndexedDB."
-      footer={
-        state.retrievalHits.length > 0 && !isSearching ? (
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <Button variant="secondary" onClick={() => setActiveStep("answer")}>
-              Continue to Answer →
-            </Button>
-          </div>
-        ) : undefined
-      }
+      description="Embed your question, compare it to chunk vectors with cosine similarity, and rank the closest chunks. Change the query and search again to see a new ranking."
     >
       <div className="flex flex-wrap items-center gap-2">
         <StatusBadge status={status} />
@@ -88,7 +79,11 @@ export function RetrieveStep() {
           onClick={() => runRetrieve(query)}
           disabled={!canRun || isSearching || !query.trim()}
         >
-          {isSearching ? "Searching…" : "Search chunks"}
+          {isSearching
+            ? "Searching…"
+            : state.retrievalHits.length > 0
+              ? "Search again"
+              : "Search similar chunks"}
         </Button>
       </div>
 
@@ -105,6 +100,8 @@ export function RetrieveStep() {
           hits={state.retrievalHits}
           meta={state.retrievalMeta}
           queryVector={state.lastQueryVector}
+          embeddings={state.embeddings}
+          chunks={state.chunks}
         />
       )}
     </Panel>

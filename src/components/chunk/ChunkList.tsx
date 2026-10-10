@@ -1,4 +1,7 @@
+import { useState } from "react";
+import { CHUNK_LIST_INITIAL_VISIBLE } from "../../config/chunkListUi";
 import type { TextChunk } from "../../types/rag";
+import { Button } from "../ui/Button";
 import { chunkBarColor } from "./chunkColors";
 
 type Props = {
@@ -13,6 +16,8 @@ function overlapChars(prev: TextChunk | undefined, cur: TextChunk): number {
 }
 
 export function ChunkList({ chunks }: Props) {
+  const [showAll, setShowAll] = useState(false);
+
   if (chunks.length === 0) return null;
 
   const totalChars = chunks.reduce((n, c) => n + (c.end - c.start), 0);
@@ -20,6 +25,12 @@ export function ChunkList({ chunks }: Props) {
     chunks.length > 0
       ? chunks[chunks.length - 1].end - chunks[0].start
       : 0;
+
+  const hasMore = chunks.length > CHUNK_LIST_INITIAL_VISIBLE;
+  const visible = showAll || !hasMore
+    ? chunks
+    : chunks.slice(0, CHUNK_LIST_INITIAL_VISIBLE);
+  const hiddenCount = chunks.length - CHUNK_LIST_INITIAL_VISIBLE;
 
   return (
     <div className="space-y-3">
@@ -34,8 +45,8 @@ export function ChunkList({ chunks }: Props) {
         )}
       </p>
       <ul className="space-y-3">
-        {chunks.map((c, i) => {
-          const prev = chunks[i - 1];
+        {visible.map((c, i) => {
+          const prev = i > 0 ? chunks[i - 1] : undefined;
           const overlap = overlapChars(prev, c);
           const len = c.end - c.start;
           return (
@@ -52,9 +63,9 @@ export function ChunkList({ chunks }: Props) {
                   [{c.start} – {c.end}]
                 </span>
                 <span className="text-slate-600">{len.toLocaleString()} chars</span>
-                {overlap > 0 && (
+                {overlap > 0 && prev && (
                   <span className="rounded-full bg-amber-100 px-2 py-0.5 text-amber-900">
-                    {overlap} char overlap with #{prev!.index}
+                    {overlap} char overlap with #{prev.index}
                   </span>
                 )}
               </div>
@@ -65,6 +76,17 @@ export function ChunkList({ chunks }: Props) {
           );
         })}
       </ul>
+      {hasMore && (
+        <Button
+          variant="secondary"
+          className="w-full sm:w-auto"
+          onClick={() => setShowAll((v) => !v)}
+        >
+          {showAll
+            ? "Show fewer chunks"
+            : `Show more chunks (${hiddenCount} more)`}
+        </Button>
+      )}
     </div>
   );
 }

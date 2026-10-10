@@ -23,7 +23,6 @@ import {
   runEmbedChunks,
 } from "../services/embedding/embeddingCoordinator";
 import { retrieveByCosine } from "../services/retrieval/retrieveChunks";
-import { runGenerateAnswer } from "../services/answer/answerCoordinator";
 import {
   clearAllCorpora,
   deleteCorpusFromIndexedDb,
@@ -44,7 +43,6 @@ const initialStatuses: Record<PipelineStepId, StepStatus> = {
   chunk: "idle",
   embed: "idle",
   retrieve: "idle",
-  answer: "idle",
 };
 
 function initialState(): PipelineState {
@@ -55,7 +53,6 @@ function initialState(): PipelineState {
     embeddings: [],
     lastQuery: "",
     retrievalHits: [],
-    answer: null,
     uploadError: null,
     chunkSettings: { ...DEFAULT_CHUNK_SETTINGS },
     embeddingBackend: "none",
@@ -65,7 +62,6 @@ function initialState(): PipelineState {
     retrievalSettings: { ...DEFAULT_RETRIEVAL_SETTINGS },
     lastQueryVector: null,
     retrievalMeta: null,
-    answerLoadProgress: null,
   };
 }
 
@@ -78,7 +74,6 @@ type RagPipelineContextValue = {
   setRetrievalSettings: (patch: Partial<RetrievalSettings>) => void;
   runEmbed: () => Promise<void>;
   runRetrieve: (query: string) => Promise<void>;
-  runAnswer: () => Promise<void>;
   resetPipeline: () => void;
 };
 
@@ -119,8 +114,6 @@ export function RagPipelineProvider({ children }: { children: ReactNode }) {
       retrievalHits: [],
       retrievalMeta: null,
       lastQueryVector: null,
-      answer: null,
-      answerLoadProgress: null,
       lastQuery: "",
       uploadError: null,
       chunkSettings,
@@ -129,7 +122,6 @@ export function RagPipelineProvider({ children }: { children: ReactNode }) {
         chunk: chunks.length > 0 ? "done" : "ready",
         embed: chunks.length > 0 ? "ready" : "idle",
         retrieve: "idle",
-        answer: "idle",
       },
     }));
     setActiveStep("chunk");
@@ -211,14 +203,11 @@ export function RagPipelineProvider({ children }: { children: ReactNode }) {
         retrievalHits: [],
         retrievalMeta: null,
         lastQueryVector: null,
-        answer: null,
-        answerLoadProgress: null,
         stepStatuses: {
           ...s.stepStatuses,
           chunk: chunks.length > 0 ? "done" : "ready",
           embed: chunks.length > 0 ? "ready" : "idle",
           retrieve: "idle",
-          answer: "idle",
         },
       };
     });
@@ -300,11 +289,9 @@ export function RagPipelineProvider({ children }: { children: ReactNode }) {
         retrievalHits: [],
         retrievalMeta: null,
         lastQueryVector: null,
-        answer: null,
         stepStatuses: {
           ...setStep(s.stepStatuses, "embed", "done"),
           retrieve: "ready",
-          answer: "idle",
         },
       }));
     } catch (err) {
@@ -363,60 +350,11 @@ export function RagPipelineProvider({ children }: { children: ReactNode }) {
         lastQueryVector: qVec,
         retrievalHits: hits,
         retrievalMeta: meta,
-        answer: null,
-        answerLoadProgress: null,
-        stepStatuses: {
-          ...setStep(s.stepStatuses, "retrieve", "done"),
-          answer: hits.length > 0 ? "ready" : "idle",
-        },
+        stepStatuses: setStep(s.stepStatuses, "retrieve", "done"),
       }));
     },
     [state.chunks, state.embeddings, state.embeddingBackend, state.document, state.retrievalSettings]
   );
-
-  const runAnswer = useCallback(async () => {
-    if (!state.lastQuery || state.retrievalHits.length === 0) return;
-    setState((s) => ({
-      ...s,
-      answer: null,
-      answerLoadProgress: { phase: "loading", message: "Generating answer…" },
-      stepStatuses: setStep(s.stepStatuses, "answer", "running"),
-    }));
-
-    try {
-      await yieldToMain();
-      const { answer } = await runGenerateAnswer(
-        state.lastQuery,
-        state.retrievalHits,
-        {
-          onLoadProgress: (progress) => {
-            setState((s) => ({ ...s, answerLoadProgress: progress }));
-          },
-        }
-      );
-
-      setState((s) => ({
-        ...s,
-        answer,
-        answerLoadProgress: {
-          phase: answer.usedFallback ? "fallback" : "ready",
-          message: answer.usedFallback
-            ? "Showing retrieved passages only."
-            : "Answer generated.",
-        },
-        stepStatuses: setStep(s.stepStatuses, "answer", "done"),
-      }));
-    } catch {
-      setState((s) => ({
-        ...s,
-        answerLoadProgress: {
-          phase: "fallback",
-          message: "Answer generation failed.",
-        },
-        stepStatuses: setStep(s.stepStatuses, "answer", "error"),
-      }));
-    }
-  }, [state.lastQuery, state.retrievalHits]);
 
   const value = useMemo(
     () => ({
@@ -428,7 +366,6 @@ export function RagPipelineProvider({ children }: { children: ReactNode }) {
       setRetrievalSettings,
       runEmbed,
       runRetrieve,
-      runAnswer,
       resetPipeline,
     }),
     [
@@ -439,7 +376,6 @@ export function RagPipelineProvider({ children }: { children: ReactNode }) {
       setRetrievalSettings,
       runEmbed,
       runRetrieve,
-      runAnswer,
       resetPipeline,
     ]
   );

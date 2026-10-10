@@ -1,11 +1,13 @@
-import type { RetrievalHit, RetrievalResultMeta } from "../../types/rag";
-import { normalizedPreview } from "../../utils/vectorStats";
+import type { ChunkEmbedding, RetrievalHit, RetrievalResultMeta, TextChunk } from "../../types/rag";
+import { RetrievalVectorSpace } from "../viz/VectorSpace3D";
 
 type Props = {
   documentName: string;
   hits: RetrievalHit[];
   meta: RetrievalResultMeta | null;
   queryVector: number[] | null;
+  embeddings: ChunkEmbedding[];
+  chunks: TextChunk[];
 };
 
 function scoreLabel(score: number): string {
@@ -20,31 +22,20 @@ export function RetrievalResults({
   hits,
   meta,
   queryVector,
+  embeddings,
+  chunks,
 }: Props) {
   if (!meta && hits.length === 0) return null;
 
-  const queryBars = queryVector ? normalizedPreview(queryVector, 8) : null;
-
   return (
     <div className="mt-6 space-y-4">
-      {queryVector && (
-        <div className="rounded-lg border border-slate-200 bg-white p-3">
-          <p className="text-sm font-medium text-slate-900">Query embedding</p>
-          <p className="mt-1 text-xs text-slate-600">
-            Your question was converted to a {queryVector.length}-dimensional vector
-            using the same model as the chunks. Retrieval compares this vector to each
-            stored chunk vector with cosine similarity.
-          </p>
-          <div className="mt-2 flex h-10 items-end gap-1">
-            {queryBars?.map((h, i) => (
-              <div
-                key={i}
-                className="flex-1 rounded-t bg-violet-500/80"
-                style={{ height: `${Math.max(10, h * 100)}%` }}
-              />
-            ))}
-          </div>
-        </div>
+      {queryVector && embeddings.length > 0 && (
+        <RetrievalVectorSpace
+          embeddings={embeddings}
+          chunks={chunks}
+          hits={hits}
+          queryVector={queryVector}
+        />
       )}
 
       {meta && (

@@ -3,8 +3,7 @@ export type PipelineStepId =
   | "upload"
   | "chunk"
   | "embed"
-  | "retrieve"
-  | "answer";
+  | "retrieve";
 
 export type StepStatus = "idle" | "ready" | "running" | "done" | "error";
 
@@ -96,36 +95,6 @@ export interface RetrievalResultMeta {
   minScore: number;
 }
 
-export type AnswerBackend = "browser" | "fallback";
-
-export type AnswerLoadPhase = EmbedLoadPhase;
-
-export interface AnswerLoadProgress {
-  phase: AnswerLoadPhase;
-  message: string;
-  percent?: number;
-  fileName?: string;
-}
-
-export interface AnswerCitation {
-  chunkId: string;
-  chunkIndex: number;
-  score: number;
-  excerpt: string;
-}
-
-export interface RagAnswer {
-  query: string;
-  text: string;
-  /** Full prompt / context string sent to the model (or shown in fallback) */
-  prompt: string;
-  citations: AnswerCitation[];
-  modelId: string;
-  backend: AnswerBackend;
-  usedFallback: boolean;
-  fallbackReason?: string;
-}
-
 export interface PipelineState {
   stepStatuses: Record<PipelineStepId, StepStatus>;
   document: UploadedDocument | null;
@@ -144,6 +113,4 @@ export interface PipelineState {
   lastQueryVector: number[] | null;
   retrievalHits: RetrievalHit[];
   retrievalMeta: RetrievalResultMeta | null;
-  answerLoadProgress: AnswerLoadProgress | null;
-  answer: RagAnswer | null;
 }
