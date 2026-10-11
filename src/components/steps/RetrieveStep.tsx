@@ -12,8 +12,7 @@ export function RetrieveStep() {
   const [query, setQuery] = useState("");
   const status = state.stepStatuses.retrieve;
   const isSearching = status === "running";
-  const hasVectors =
-    state.embeddings.length > 0 || state.embeddingsPersisted;
+  const hasVectors = state.embeddings.length > 0 || state.embeddingsPersisted;
   const canRun =
     hasVectors &&
     state.chunks.length > 0 &&
@@ -27,25 +26,27 @@ export function RetrieveStep() {
       <div className="flex flex-wrap items-center gap-2">
         <StatusBadge status={status} />
         {state.embeddingsPersisted && (
-          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">
+          <span className="rounded-sm bg-sage px-2 py-0.5 text-xs font-medium text-forest">
             Chunk vectors in IndexedDB
           </span>
         )}
         {state.retrievalHits.length > 0 && state.lastQuery && (
-          <span className="text-sm text-slate-600">
-            {state.retrievalHits.length} result(s) for &ldquo;{state.lastQuery}&rdquo;
+          <span className="text-sm text-ink/75">
+            {state.retrievalHits.length} result(s) for &ldquo;{state.lastQuery}
+            &rdquo;
           </span>
         )}
       </div>
 
-      <p className="mt-3 text-sm text-slate-600">
-        <strong>How it works:</strong> each chunk embedding lives in your browser&apos;s
-        IndexedDB after the Embed step. Here we embed only the query, score every stored
-        chunk, sort by similarity, apply your threshold, then return the top K.
+      <p className="mt-3 text-sm text-ink/75">
+        <strong>How it works:</strong> each chunk embedding lives in your
+        browser&apos;s IndexedDB after the Embed step. Here we embed only the
+        query, score every stored chunk, sort by similarity, apply your
+        threshold, then return the top K.
       </p>
 
       {!hasVectors && (
-        <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <p className="mt-4 rounded bg-rust/10 px-3 py-2 text-sm text-ink">
           Run embedding before retrieval.
         </p>
       )}
@@ -60,14 +61,15 @@ export function RetrieveStep() {
         </div>
       )}
 
-      <label className="mt-4 block text-sm font-medium text-slate-700">
+      <label className="mt-4 block text-sm font-medium text-ink">
         Query
-        <span className="ml-1 font-normal text-slate-500">
+        <span className="ml-1 font-normal text-ink/65">
           — natural language question to embed and match against chunks
         </span>
         <textarea
-          className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm shadow-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+          className="mt-1 w-full rounded border border-ink/15 px-3 py-2 text-sm shadow-sm focus:border-forest focus:outline-none focus:ring-1 focus:ring-forest"
           rows={2}
+          placeholder="Enter your question here..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           disabled={!hasVectors}
@@ -78,6 +80,7 @@ export function RetrieveStep() {
         <Button
           onClick={() => runRetrieve(query)}
           disabled={!canRun || isSearching || !query.trim()}
+          className="bg-gray-200 text-black hover:bg-gray-300"
         >
           {isSearching
             ? "Searching…"

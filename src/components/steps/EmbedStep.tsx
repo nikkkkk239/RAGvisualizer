@@ -42,7 +42,11 @@ export function EmbedStep() {
     status,
   ]);
 
-  const showWorking = isEmbedding || (status === "ready" && state.embeddings.length === 0 && state.chunks.length > 0);
+  const showWorking =
+    isEmbedding ||
+    (status === "ready" &&
+      state.embeddings.length === 0 &&
+      state.chunks.length > 0);
 
   return (
     <Panel
@@ -51,10 +55,17 @@ export function EmbedStep() {
       footer={
         state.embeddings.length > 0 && !isEmbedding ? (
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <Button variant="ghost" className="text-xs" onClick={() => void runEmbed()}>
+            <Button
+              variant="ghost"
+              className="text-xs"
+              onClick={() => void runEmbed()}
+            >
               Re-run embeddings
             </Button>
-            <Button variant="secondary" onClick={() => setActiveStep("retrieve")}>
+            <Button
+              variant="secondary"
+              onClick={() => setActiveStep("retrieve")}
+            >
               Continue to Retrieve →
             </Button>
           </div>
@@ -63,7 +74,7 @@ export function EmbedStep() {
     >
       <div className="flex flex-wrap items-center gap-2">
         <StatusBadge status={status} />
-        <span className="text-sm text-slate-600">
+        <span className="text-sm text-ink/75">
           {state.embeddings.length > 0 && !isEmbedding
             ? `${state.embeddings.length} vectors ready`
             : showWorking
@@ -71,20 +82,20 @@ export function EmbedStep() {
               : "Waiting for chunks"}
         </span>
         {state.embeddingsPersisted && !isEmbedding && (
-          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">
+          <span className="rounded-sm bg-sage px-2 py-0.5 text-xs font-medium text-forest">
             Saved to IndexedDB
           </span>
         )}
       </div>
 
       {state.embedError && (
-        <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
+        <p className="mt-3 rounded bg-rust/10 px-3 py-2 text-sm text-ink">
           {state.embedError}
         </p>
       )}
 
       {state.chunks.length === 0 && (
-        <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <p className="mt-4 rounded bg-rust/10 px-3 py-2 text-sm text-ink">
           Complete chunking before embedding.
         </p>
       )}
@@ -106,7 +117,10 @@ export function EmbedStep() {
           <div className="mt-4">
             <EmbeddingBackendBadge />
           </div>
-          <ChunkVectorSpace embeddings={state.embeddings} chunks={state.chunks} />
+          <ChunkVectorSpace
+            embeddings={state.embeddings}
+            chunks={state.chunks}
+          />
           <EmbedVectorList
             embeddings={state.embeddings}
             chunkById={chunkById}

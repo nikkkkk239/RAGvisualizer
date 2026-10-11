@@ -9,12 +9,17 @@ type Props = {
 
 type Segment =
   | { kind: "plain"; text: string }
-  | { kind: "chunk"; text: string; chunkIndex: number; role: "body" | "overlap" };
+  | {
+      kind: "chunk";
+      text: string;
+      chunkIndex: number;
+      role: "body" | "overlap";
+    };
 
 function buildSegments(
   fullText: string,
   chunks: TextChunk[],
-  limit: number
+  limit: number,
 ): Segment[] {
   const end = Math.min(fullText.length, limit);
   if (chunks.length === 0) {
@@ -78,18 +83,17 @@ export function ChunkHighlightedText({
 
   return (
     <div className="space-y-2">
-      <p className="text-xs text-slate-500">
-        Colored spans show chunk coverage; dashed underline marks overlap between
-        neighbors.
-      </p>
-      <div className="max-h-56 overflow-auto rounded-lg border border-slate-200 bg-white p-3 text-sm leading-relaxed text-slate-800 whitespace-pre-wrap">
+      
+      <div className="max-h-56 overflow-auto rounded border border-black/30 bg-surface p-3 text-sm leading-relaxed text-ink whitespace-pre-wrap">
         {segments.map((seg, i) => {
           if (seg.kind === "plain") {
             return <span key={i}>{seg.text}</span>;
           }
           const color = chunkColorClass(seg.chunkIndex);
           const overlap =
-            seg.role === "overlap" ? "underline decoration-dashed decoration-amber-600" : "";
+            seg.role === "overlap"
+              ? "underline decoration-dashed decoration-rust"
+              : "";
           return (
             <span
               key={i}
@@ -101,7 +105,7 @@ export function ChunkHighlightedText({
           );
         })}
         {truncated && (
-          <span className="text-slate-400"> … (preview truncated)</span>
+          <span className="text-muted"> … (preview truncated)</span>
         )}
       </div>
     </div>

@@ -2,7 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { ChunkEmbedding, RetrievalHit, TextChunk } from "../../types/rag";
 import { viewCoordinates } from "../../utils/vectorSpace";
 
-const CHUNK_COLORS = ["#0284c7", "#059669", "#d97706", "#7c3aed", "#e11d48", "#0891b2"];
+const CHUNK_COLORS = [
+  "#355E4B",
+  "#B85C38",
+  "#24382C",
+  "#8C4A32",
+  "#5C6B58",
+  "#6E3E2C",
+];
 
 export type SpacePoint = {
   key: string;
@@ -28,7 +35,7 @@ function projectPoint(
   point: SpacePoint,
   camera: Camera,
   width: number,
-  height: number
+  height: number,
 ): Projected {
   const cosYaw = Math.cos(camera.yaw);
   const sinYaw = Math.sin(camera.yaw);
@@ -53,7 +60,7 @@ function drawSpace(
   wrap: HTMLDivElement,
   points: SpacePoint[],
   camera: Camera,
-  projected: Projected[]
+  projected: Projected[],
 ) {
   const width = wrap.clientWidth || 640;
   const height = 380;
@@ -65,28 +72,28 @@ function drawSpace(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
   ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-  ctx.fillStyle = "#0f172a";
+  ctx.fillStyle = "#F4F1E9";
   ctx.fillRect(0, 0, width, height);
 
   const origin = projectPoint(
     { key: "o", label: "", x: 0, y: 0, z: 0, color: "#fff", size: 0 },
     camera,
     width,
-    height
+    height,
   );
   const axisEnd = (x: number, y: number, z: number) =>
     projectPoint(
       { key: "a", label: "", x, y, z, color: "#fff", size: 0 },
       camera,
       width,
-      height
+      height,
     );
   const axes = [
-    { end: axisEnd(1.15, 0, 0), color: "#f87171", name: "1" },
-    { end: axisEnd(0, 1.15, 0), color: "#4ade80", name: "2" },
-    { end: axisEnd(0, 0, 1.15), color: "#60a5fa", name: "3" },
+    { end: axisEnd(1.15, 0, 0), color: "#B85C38", name: "1" },
+    { end: axisEnd(0, 1.15, 0), color: "#355E4B", name: "2" },
+    { end: axisEnd(0, 0, 1.15), color: "#20231F", name: "3" },
   ];
-  ctx.font = "11px ui-sans-serif, system-ui, sans-serif";
+  ctx.font = "11px Source Sans 3, ui-sans-serif, system-ui, sans-serif";
   for (const axis of axes) {
     ctx.strokeStyle = axis.color;
     ctx.globalAlpha = 0.7;
@@ -101,7 +108,8 @@ function drawSpace(
   }
 
   projected.length = 0;
-  for (const point of points) projected.push(projectPoint(point, camera, width, height));
+  for (const point of points)
+    projected.push(projectPoint(point, camera, width, height));
   projected.sort((a, b) => {
     if (a.key === "query") return 1;
     if (b.key === "query") return -1;
@@ -109,7 +117,7 @@ function drawSpace(
   });
 
   const labelBoxes: { x: number; y: number; w: number; h: number }[] = [];
-  ctx.font = "11px ui-sans-serif, system-ui, sans-serif";
+  ctx.font = "11px Source Sans 3, ui-sans-serif, system-ui, sans-serif";
   for (const point of projected) {
     ctx.beginPath();
     ctx.fillStyle = point.color;
@@ -119,11 +127,12 @@ function drawSpace(
     ctx.globalAlpha = 1;
     if (point.size >= 6) {
       ctx.lineWidth = 1.5;
-      ctx.strokeStyle = "#f8fafc";
+      ctx.strokeStyle = "#20231F";
       ctx.stroke();
       const widthOfLabel = ctx.measureText(point.label).width;
       let labelX = point.sx + point.size + 4;
-      let labelY = point.key === "query" ? point.sy - point.size - 2 : point.sy + 4;
+      let labelY =
+        point.key === "query" ? point.sy - point.size - 2 : point.sy + 4;
       for (let attempt = 0; attempt < 8; attempt++) {
         const box = { x: labelX, y: labelY - 11, w: widthOfLabel, h: 14 };
         const overlaps = labelBoxes.some(
@@ -131,7 +140,7 @@ function drawSpace(
             labelX < placed.x + placed.w + 4 &&
             labelX + widthOfLabel + 4 > placed.x &&
             labelY - 11 < placed.y + placed.h &&
-            labelY + 3 > placed.y
+            labelY + 3 > placed.y,
         );
         if (!overlaps) {
           labelBoxes.push(box);
@@ -139,7 +148,7 @@ function drawSpace(
         }
         labelY += 14;
       }
-      ctx.fillStyle = "#e2e8f0";
+      ctx.fillStyle = "#20231F";
       ctx.fillText(point.label, labelX, labelY);
     }
   }
@@ -149,7 +158,12 @@ export function VectorSpace3D({ title, caption, points }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const camera = useRef<Camera>({ yaw: 0.7, pitch: 0.45, zoom: 1 });
-  const drag = useRef<{ x: number; y: number; yaw: number; pitch: number } | null>(null);
+  const drag = useRef<{
+    x: number;
+    y: number;
+    yaw: number;
+    pitch: number;
+  } | null>(null);
   const projected = useRef<Projected[]>([]);
   const pointsRef = useRef(points);
   pointsRef.current = points;
@@ -159,7 +173,13 @@ export function VectorSpace3D({ title, caption, points }: Props) {
     const canvas = canvasRef.current;
     const wrap = wrapRef.current;
     if (!canvas || !wrap) return;
-    drawSpace(canvas, wrap, pointsRef.current, camera.current, projected.current);
+    drawSpace(
+      canvas,
+      wrap,
+      pointsRef.current,
+      camera.current,
+      projected.current,
+    );
   };
 
   useEffect(() => {
@@ -168,7 +188,13 @@ export function VectorSpace3D({ title, caption, points }: Props) {
     if (!canvas || !wrap) return;
 
     const paint = () => {
-      drawSpace(canvas, wrap, pointsRef.current, camera.current, projected.current);
+      drawSpace(
+        canvas,
+        wrap,
+        pointsRef.current,
+        camera.current,
+        projected.current,
+      );
     };
 
     const hitTest = (clientX: number, clientY: number) => {
@@ -196,7 +222,7 @@ export function VectorSpace3D({ title, caption, points }: Props) {
               color: best.color,
               size: best.size,
             }
-          : null
+          : null,
       );
     };
 
@@ -214,10 +240,14 @@ export function VectorSpace3D({ title, caption, points }: Props) {
         hitTest(event.clientX, event.clientY);
         return;
       }
-      camera.current.yaw = drag.current.yaw + (event.clientX - drag.current.x) * 0.008;
+      camera.current.yaw =
+        drag.current.yaw + (event.clientX - drag.current.x) * 0.008;
       camera.current.pitch = Math.max(
         -1.2,
-        Math.min(1.2, drag.current.pitch + (event.clientY - drag.current.y) * 0.008)
+        Math.min(
+          1.2,
+          drag.current.pitch + (event.clientY - drag.current.y) * 0.008,
+        ),
       );
       paint();
     };
@@ -260,18 +290,21 @@ export function VectorSpace3D({ title, caption, points }: Props) {
   return (
     <figure className="mt-4">
       <figcaption className="mb-2">
-        <p className="text-sm font-semibold text-slate-900">{title}</p>
-        <p className="mt-1 text-xs text-slate-600">{caption}</p>
+        <p className="text-sm font-semibold text-ink">{title}</p>
+        <p className="mt-1 text-xs text-ink/75">{caption}</p>
       </figcaption>
-      <div ref={wrapRef} className="overflow-hidden rounded-lg border border-slate-800">
+      <div
+        ref={wrapRef}
+        className="overflow-hidden rounded border border-ink/20"
+      >
         <canvas
           ref={canvasRef}
-          className="block w-full touch-none cursor-grab active:cursor-grabbing"
+          className="block bg-gray-200 w-full touch-none cursor-grab active:cursor-grabbing"
           role="img"
           aria-label={title}
         />
       </div>
-      <p className="mt-2 min-h-10 text-xs text-slate-600" aria-live="polite">
+      <p className="mt-2 min-h-10 text-xs text-ink/75" aria-live="polite">
         {hover
           ? `${hover.label}${hover.detail ? ` — ${hover.detail}` : ""}`
           : "Drag to rotate, scroll to zoom, and hover a point. Axes 1–3 are the three main directions of variation, not the original 384 numbers."}
@@ -294,8 +327,12 @@ export function ChunkVectorSpace({
 }) {
   const points = useMemo(() => {
     const chunkById = new Map(chunks.map((chunk) => [chunk.id, chunk]));
-    const ordered = embeddings.filter((embedding) => chunkById.has(embedding.chunkId));
-    const coords = viewCoordinates(ordered.map((embedding) => embedding.vector)).points;
+    const ordered = embeddings.filter((embedding) =>
+      chunkById.has(embedding.chunkId),
+    );
+    const coords = viewCoordinates(
+      ordered.map((embedding) => embedding.vector),
+    ).points;
     return ordered.map((embedding, index) => {
       const chunk = chunkById.get(embedding.chunkId)!;
       return {
@@ -333,11 +370,13 @@ export function RetrievalVectorSpace({
 }) {
   const points = useMemo(() => {
     const chunkById = new Map(chunks.map((chunk) => [chunk.id, chunk]));
-    const ordered = embeddings.filter((embedding) => chunkById.has(embedding.chunkId));
+    const ordered = embeddings.filter((embedding) =>
+      chunkById.has(embedding.chunkId),
+    );
     const { points: coords, extras } = viewCoordinates(
       ordered.map((embedding) => embedding.vector),
       [queryVector],
-      true
+      true,
     );
     const rankById = new Map(hits.map((hit, rank) => [hit.chunk.id, rank]));
     const plotted: SpacePoint[] = ordered.map((embedding, index) => {
@@ -346,12 +385,14 @@ export function RetrievalVectorSpace({
       const similar = rank !== undefined;
       return {
         key: embedding.chunkId,
-        label: similar ? `#${chunk.index} · rank ${rank + 1}` : `#${chunk.index}`,
+        label: similar
+          ? `#${chunk.index} · rank ${rank + 1}`
+          : `#${chunk.index}`,
         detail: snippet(chunk.text),
         x: coords[index][0],
         y: coords[index][1],
         z: coords[index][2],
-        color: similar ? CHUNK_COLORS[rank % CHUNK_COLORS.length] : "#94a3b8",
+        color: similar ? CHUNK_COLORS[rank % CHUNK_COLORS.length] : "#858A84",
         size: similar ? 7 : 3.5,
       };
     });
@@ -363,7 +404,7 @@ export function RetrievalVectorSpace({
       x: query[0],
       y: query[1],
       z: query[2],
-      color: "#c4b5fd",
+      color: "#B85C38",
       size: 8,
     });
     return plotted;

@@ -5,16 +5,12 @@ export function AppHeader() {
   const { resetPipeline } = useRagPipeline();
 
   return (
-    <header className="border-b border-slate-200 bg-white/80 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <header className="border-b border-ink/15 bg-paper">
+      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-sky-600">
-            Local-first RAG
-          </p>
-          <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">
-            RAG Visualizer
-          </h1>
-          <p className="mt-1 max-w-xl text-sm text-slate-600">
+          
+          <h1 className="mt-1 text-xl text-ink">RAG Visualizer</h1>
+          <p className="mt-1 max-w-xl text-sm text-ink/75">
             Upload your documents and run the full RAG pipeline in the browser.
           </p>
         </div>

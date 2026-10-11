@@ -5,25 +5,26 @@ export default {
     extend: {
       fontFamily: {
         sans: [
-          "Inter",
+          "Source Sans 3",
           "ui-sans-serif",
           "system-ui",
           "sans-serif",
-          "Apple Color Emoji",
-          "Segoe UI Emoji",
         ],
-        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
+        serif: ["Source Serif 4", "Georgia", "serif"],
+        mono: ["IBM Plex Mono", "ui-monospace", "monospace"],
       },
       colors: {
-        pipeline: {
-          idle: "#64748b",
-          active: "#0ea5e9",
-          done: "#10b981",
-          pending: "#94a3b8",
-        },
+        paper: "#F4F1E9",
+        surface: "#FBFAF6",
+        ink: "#20231F",
+        forest: "#355E4B",
+        sage: "#DCE5D8",
+        rust: "#B85C38",
+        muted: "#858A84",
       },
       boxShadow: {
-        panel: "0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06)",
+        panel: "none",
+        sm: "none",
       },
     },
   },

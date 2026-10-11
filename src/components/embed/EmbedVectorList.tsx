@@ -27,7 +27,7 @@ export function EmbedVectorList({ embeddings, chunkById }: Props) {
 
   return (
     <div className="mt-6 space-y-3">
-      <h3 className="text-sm font-semibold text-slate-900">
+      <h3 className="text-sm font-semibold text-ink">
         Per-chunk vectors ({embeddings.length})
       </h3>
       <div className="space-y-3">

@@ -15,7 +15,7 @@ type Props = {
 };
 
 function connectorClass(done: boolean) {
-  return done ? "bg-emerald-300" : "bg-slate-200";
+  return done ? "bg-blue-300" : "bg-gray-300";
 }
 
 export function PipelineStepper({ activeStep, statuses, onSelect }: Props) {
@@ -33,25 +33,25 @@ export function PipelineStepper({ activeStep, statuses, onSelect }: Props) {
                 <button
                   type="button"
                   onClick={() => onSelect(step.id)}
-                  className={`group flex flex-1 items-center gap-3 rounded-lg border px-3 py-3 text-left transition sm:rounded-none sm:border-0 sm:border-b-2 sm:px-4 ${
+                  className={`group flex flex-1 items-center gap-3 rounded border px-3 py-3 text-left transition sm:rounded-none sm:border-0 sm:border-b-2 sm:px-4 ${
                     isActive
-                      ? "border-sky-300 bg-sky-50 sm:border-b-sky-500"
-                      : "border-slate-200 bg-white hover:bg-slate-50 sm:border-b-transparent"
+                      ? "border-forest/40 bg-sage sm:border-b-forest"
+                      : "border-ink/15 bg-surface hover:bg-sage/40 sm:border-b-transparent"
                   }`}
                 >
                   <span
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-sm text-sm font-semibold ${
                       status === "done"
-                        ? "bg-emerald-500 text-white"
+                        ? "bg-forest text-paper"
                         : isActive
-                          ? "bg-sky-600 text-white"
-                          : "bg-slate-200 text-slate-700"
+                          ? "bg-forest text-paper"
+                          : "bg-sage text-ink"
                     }`}
                   >
                     {status === "done" ? "✓" : step.short}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-semibold text-slate-900">
+                    <span className="block text-sm font-semibold text-ink">
                       {step.label}
                     </span>
                     <StatusBadge status={status} />
@@ -65,7 +65,7 @@ export function PipelineStepper({ activeStep, statuses, onSelect }: Props) {
                 >
                   <div
                     className={`mx-auto h-0.5 w-full max-w-[48px] ${connectorClass(
-                      prevDone && status !== "idle"
+                      prevDone && status !== "idle",
                     )}`}
                   />
                 </div>

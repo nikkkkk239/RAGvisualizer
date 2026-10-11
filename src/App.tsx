@@ -12,7 +12,7 @@ function AppContent() {
     <div className="min-h-screen flex flex-col">
       <AppHeader />
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
-        <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-panel sm:p-4">
+        <div className="rounded-md border border-ink/15 bg-surface p-3 shadow-panel sm:p-4">
           <PipelineStepper
             activeStep={activeStep}
             statuses={state.stepStatuses}
@@ -23,8 +23,9 @@ function AppContent() {
           <StepContent stepId={activeStep} />
         </div>
       </main>
-      <footer className="border-t border-slate-200 py-4 text-center text-xs text-slate-500">
-        Processing stays in this browser tab. Chunk vectors can be stored in IndexedDB.
+      <footer className="border-t border-ink/15 py-4 text-center text-xs text-ink/65">
+        Processing stays in this browser tab. Chunk vectors can be stored in
+        IndexedDB.
       </footer>
     </div>
   );

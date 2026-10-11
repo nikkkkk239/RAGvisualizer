@@ -1,10 +1,10 @@
 const PALETTE = [
-  "bg-sky-200 border-sky-400",
-  "bg-emerald-200 border-emerald-400",
-  "bg-amber-200 border-amber-400",
-  "bg-violet-200 border-violet-400",
-  "bg-rose-200 border-rose-400",
-  "bg-cyan-200 border-cyan-400",
+  "bg-sage border-forest/40",
+  "bg-rust/20 border-rust/50",
+  "bg-forest/15 border-forest/35",
+  "bg-rust/10 border-rust/40",
+  "bg-sage/80 border-ink/20",
+  "bg-forest/25 border-forest/50",
 ];
 
 export function chunkColorClass(index: number): string {
@@ -13,12 +13,12 @@ export function chunkColorClass(index: number): string {
 
 export function chunkBarColor(index: number): string {
   const colors = [
-    "bg-sky-500",
-    "bg-emerald-500",
-    "bg-amber-500",
-    "bg-violet-500",
-    "bg-rose-500",
-    "bg-cyan-500",
+    "bg-forest",
+    "bg-rust",
+    "bg-forest/70",
+    "bg-rust/80",
+    "bg-ink/50",
+    "bg-forest/50",
   ];
   return colors[index % colors.length];
 }

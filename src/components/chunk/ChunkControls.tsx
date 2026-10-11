@@ -26,25 +26,20 @@ type Props = {
 };
 
 export function ChunkControls({ settings, onChange, disabled }: Props) {
-  const overlapMax = Math.min(
-    CHUNK_LIMITS.overlapMax,
-    settings.chunkSize - 1
-  );
+  const overlapMax = Math.min(CHUNK_LIMITS.overlapMax, settings.chunkSize - 1);
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <fieldset className="space-y-2 sm:col-span-2 lg:col-span-1">
-        <legend className="text-sm font-medium text-slate-800">
-          Split method
-        </legend>
+        <legend className="text-sm font-medium text-ink">Split method</legend>
         <div className="flex flex-col gap-2">
           {METHODS.map((m) => (
             <label
               key={m.id}
-              className={`flex cursor-pointer gap-2 rounded-lg border px-3 py-2 text-sm transition ${
+              className={`flex cursor-pointer gap-2 rounded border px-3 py-2 text-sm transition ${
                 settings.method === m.id
-                  ? "border-sky-400 bg-sky-50 ring-1 ring-sky-200"
-                  : "border-slate-200 bg-white hover:border-slate-300"
+                  ? "border-forest bg-sage ring-1 ring-forest/25"
+                  : "border-ink/15 bg-surface hover:border-ink/30"
               } ${disabled ? "pointer-events-none opacity-60" : ""}`}
             >
               <input
@@ -56,8 +51,8 @@ export function ChunkControls({ settings, onChange, disabled }: Props) {
                 onChange={() => onChange({ method: m.id })}
               />
               <span>
-                <span className="font-medium text-slate-900">{m.label}</span>
-                <span className="block text-xs text-slate-500">{m.hint}</span>
+                <span className="font-medium text-ink">{m.label}</span>
+                <span className="block text-xs text-ink/65">{m.hint}</span>
               </span>
             </label>
           ))}
@@ -65,9 +60,9 @@ export function ChunkControls({ settings, onChange, disabled }: Props) {
       </fieldset>
 
       <div className="space-y-2">
-        <label className="flex items-center justify-between text-sm font-medium text-slate-800">
+        <label className="flex items-center justify-between text-sm font-medium text-ink">
           Chunk size
-          <span className="font-mono text-xs text-slate-600">
+          <span className="font-mono text-xs text-ink/75">
             {settings.chunkSize} chars
           </span>
         </label>
@@ -78,7 +73,7 @@ export function ChunkControls({ settings, onChange, disabled }: Props) {
           step={CHUNK_LIMITS.sizeStep}
           value={settings.chunkSize}
           disabled={disabled}
-          className="w-full accent-sky-600"
+          className="w-full accent-forest"
           onChange={(e) => onChange({ chunkSize: Number(e.target.value) })}
         />
         <input
@@ -88,15 +83,15 @@ export function ChunkControls({ settings, onChange, disabled }: Props) {
           step={CHUNK_LIMITS.sizeStep}
           value={settings.chunkSize}
           disabled={disabled}
-          className="w-full rounded-lg border border-slate-200 px-2 py-1 text-sm"
+          className="w-full rounded border border-ink/15 px-2 py-1 text-sm"
           onChange={(e) => onChange({ chunkSize: Number(e.target.value) })}
         />
       </div>
 
       <div className="space-y-2">
-        <label className="flex items-center justify-between text-sm font-medium text-slate-800">
+        <label className="flex items-center justify-between text-sm font-medium text-ink">
           Overlap
-          <span className="font-mono text-xs text-slate-600">
+          <span className="font-mono text-xs text-ink/75">
             {settings.overlap} chars
           </span>
         </label>
@@ -107,7 +102,7 @@ export function ChunkControls({ settings, onChange, disabled }: Props) {
           step={CHUNK_LIMITS.overlapStep}
           value={Math.min(settings.overlap, overlapMax)}
           disabled={disabled}
-          className="w-full accent-sky-600"
+          className="w-full accent-forest"
           onChange={(e) => onChange({ overlap: Number(e.target.value) })}
         />
         <input
@@ -117,7 +112,7 @@ export function ChunkControls({ settings, onChange, disabled }: Props) {
           step={CHUNK_LIMITS.overlapStep}
           value={Math.min(settings.overlap, overlapMax)}
           disabled={disabled}
-          className="w-full rounded-lg border border-slate-200 px-2 py-1 text-sm"
+          className="w-full rounded border border-ink/15 px-2 py-1 text-sm"
           onChange={(e) => onChange({ overlap: Number(e.target.value) })}
         />
       </div>

@@ -19,7 +19,7 @@ export function ChunkStep() {
       footer={
         doc && state.chunks.length > 0 ? (
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-ink/65">
               When you&apos;re happy with the split, continue to embedding.
             </p>
             <Button variant="secondary" onClick={() => setActiveStep("embed")}>
@@ -32,14 +32,14 @@ export function ChunkStep() {
       <div className="flex flex-wrap items-center gap-2">
         <StatusBadge status={status} />
         {state.chunks.length > 0 && (
-          <span className="text-sm text-slate-600">
+          <span className="text-sm text-ink/75">
             Live preview · {state.chunks.length} chunks
           </span>
         )}
       </div>
 
       {!doc && (
-        <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <p className="mt-4 rounded bg-rust/10 px-3 py-2 text-sm text-ink">
           Upload a document first.
         </p>
       )}
@@ -54,7 +54,7 @@ export function ChunkStep() {
           </div>
 
           {state.chunks.length === 0 ? (
-            <p className="mt-4 text-sm text-slate-600">
+            <p className="mt-4 text-sm text-ink/75">
               No chunks produced—try a larger chunk size or check that the
               document has text.
             </p>

@@ -32,7 +32,7 @@ export function UploadStep() {
       title="Upload"
       description="Files are read and parsed entirely in your browser—nothing is uploaded to a server."
       footer={
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-ink/65">
           Scanned PDFs (image-only) have no extractable text. Password-protected
           PDFs are not supported.
         </p>
@@ -41,7 +41,7 @@ export function UploadStep() {
       <div className="flex flex-wrap items-center gap-2">
         <StatusBadge status={status} />
         {state.document && (
-          <span className="text-sm text-slate-600">
+          <span className="text-sm text-ink/75">
             Loaded: <strong>{state.document.name}</strong> (
             {state.document.byteSize.toLocaleString()} bytes,{" "}
             {state.document.text.length.toLocaleString()} characters)
@@ -52,15 +52,15 @@ export function UploadStep() {
       {state.uploadError && (
         <div
           role="alert"
-          className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
+          className="mt-3 rounded border border-rust/50 bg-rust/10 px-3 py-2 text-sm text-ink"
         >
           {state.uploadError}
         </div>
       )}
 
       <div
-        className={`mt-4 rounded-xl border-2 border-dashed p-8 text-center transition ${
-          dragOver ? "border-sky-400 bg-sky-50" : "border-slate-200 bg-slate-50"
+        className={`mt-4 rounded-md border-2 border-dashed p-8 text-center transition ${
+          dragOver ? "border-forest bg-sage" : "border-ink/15 bg-sage/40"
         }`}
         onDragOver={(e) => {
           e.preventDefault();
@@ -73,10 +73,10 @@ export function UploadStep() {
           onFiles(e.dataTransfer.files);
         }}
       >
-        <p className="text-sm font-medium text-slate-800">
+        <p className="text-sm font-medium text-ink">
           Drop files here or choose from your device
         </p>
-        <p className="mt-1 text-xs text-slate-500">{limitsLine}</p>
+        <p className="mt-1 text-xs text-ink/65">{limitsLine}</p>
         <div className="mt-4 flex flex-wrap justify-center gap-2">
           <Button
             onClick={() => inputRef.current?.click()}
@@ -97,12 +97,12 @@ export function UploadStep() {
 
       {state.document && state.document.sources.length > 0 && (
         <div className="mt-4 overflow-x-auto">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-ink/65">
             Sources
           </p>
           <table className="mt-2 min-w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-200 text-xs uppercase text-slate-500">
+              <tr className="border-b border-ink/15 text-xs uppercase text-ink/65">
                 <th className="py-2 pr-4">File</th>
                 <th className="py-2 pr-4">Type</th>
                 <th className="py-2 pr-4">Size</th>
@@ -111,17 +111,15 @@ export function UploadStep() {
             </thead>
             <tbody>
               {state.document.sources.map((src, i) => (
-                <tr key={`${src.name}-${i}`} className="border-b border-slate-100">
-                  <td className="py-2 pr-4 font-medium text-slate-800">
-                    {src.name}
-                  </td>
-                  <td className="py-2 pr-4 uppercase text-xs text-slate-600">
+                <tr key={`${src.name}-${i}`} className="border-b border-ink/10">
+                  <td className="py-2 pr-4 font-medium text-ink">{src.name}</td>
+                  <td className="py-2 pr-4 uppercase text-xs text-ink/75">
                     {src.mediaType}
                   </td>
-                  <td className="py-2 pr-4 text-slate-600">
+                  <td className="py-2 pr-4 text-ink/75">
                     {src.byteSize.toLocaleString()} B
                   </td>
-                  <td className="py-2 text-slate-600">
+                  <td className="py-2 text-ink/75">
                     {src.charCount.toLocaleString()}
                   </td>
                 </tr>
@@ -133,10 +131,10 @@ export function UploadStep() {
 
       {state.document && (
         <div className="mt-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-ink/65">
             Extracted text preview
           </p>
-          <pre className="mt-2 max-h-64 overflow-auto rounded-lg bg-slate-900 p-3 text-left text-xs text-slate-100 font-mono whitespace-pre-wrap">
+          <pre className="mt-2 max-h-64 overflow-auto rounded bg-ink p-3 text-left text-xs text-paper font-mono whitespace-pre-wrap">
             {state.document.text.slice(0, 2000)}
             {state.document.text.length > 2000 ? "\n…" : ""}
           </pre>

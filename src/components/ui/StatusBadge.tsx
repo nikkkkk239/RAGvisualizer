@@ -9,17 +9,17 @@ const labels: Record<StepStatus, string> = {
 };
 
 const styles: Record<StepStatus, string> = {
-  idle: "bg-slate-100 text-slate-600",
-  ready: "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
-  running: "bg-amber-50 text-amber-800 ring-1 ring-amber-200",
-  done: "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200",
-  error: "bg-red-50 text-red-700 ring-1 ring-red-200",
+  idle: "bg-sage/80 text-ink/75",
+  ready: "bg-sage text-forest ring-1 ring-forest/25",
+  running: "bg-rust/10 text-ink ring-1 ring-rust/35",
+  done: "bg-sage text-forest ring-1 ring-forest/30",
+  error: "bg-rust/10 text-ink ring-1 ring-rust/40",
 };
 
 export function StatusBadge({ status }: { status: StepStatus }) {
   return (
     <span
-      className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[status]}`}
+      className={`inline-flex rounded-sm px-2.5 py-0.5 text-xs font-medium ${styles[status]}`}
     >
       {labels[status]}
     </span>
