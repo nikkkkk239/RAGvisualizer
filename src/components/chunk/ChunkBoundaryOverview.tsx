@@ -15,7 +15,7 @@ export function ChunkBoundaryOverview({ totalChars, chunks }: Props) {
         <span>Document map (character positions)</span>
         <span className="font-mono">0 – {totalChars.toLocaleString()}</span>
       </div>
-      {/* <div
+      <div
         className="relative h-8 w-full overflow-hidden rounded border border-ink/15 bg-sage/80"
         aria-hidden
       >
@@ -31,7 +31,7 @@ export function ChunkBoundaryOverview({ totalChars, chunks }: Props) {
             />
           );
         })}
-      </div> */}
+      </div>
       <div className="flex flex-wrap gap-2 text-xs text-ink/75">
         {chunks.map((c) => (
           <span key={c.id} className="font-mono">

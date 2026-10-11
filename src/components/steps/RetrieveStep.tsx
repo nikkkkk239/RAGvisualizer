@@ -80,7 +80,7 @@ export function RetrieveStep() {
         <Button
           onClick={() => runRetrieve(query)}
           disabled={!canRun || isSearching || !query.trim()}
-          className="bg-gray-200 text-black hover:bg-gray-300"
+          
         >
           {isSearching
             ? "Searching…"
